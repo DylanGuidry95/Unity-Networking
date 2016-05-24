@@ -3,44 +3,23 @@ using System.Collections.Generic;
 using UnityEditor;
 
 [CustomEditor(typeof(MinimizeInpector))]
-class InpectorBehavior : Editor
+public class InpectorBehavior : Editor
 {
-    List<Component> AllTheComponents = new List<Component>();
-    List<bool> States = new List<bool>();
-    bool GetInfo = true;
-
     MinimizeInpector Script;
+
+    bool s = true;
 
     void OnEnable()
     {
-        Script = (MinimizeInpector)target;
-
-        foreach (Component c in Script.GetComponents<Component>())
-        {
-            if (c.GetType() != typeof(MinimizeInpector) && !AllTheComponents.Contains(c))
-            {
-                AllTheComponents.Add(c);
-                States.Add(false);
-            }
-        }
-
-
+        Script = target as MinimizeInpector;
     }
-
 
     public override void OnInspectorGUI()
     {
-        for (int i = 0; i < States.Count; i++)
+        if (GUILayout.Button("Collapse"))
         {
-            States[i] = GUILayout.Toggle(States[i], AllTheComponents[i].GetType().ToString());
+            Script.CollapseItems(s);
+            s = !s;
         }
-
-        foreach (bool b in States)
-        {
-            if (b == true)
-                AllTheComponents[States.IndexOf(b)].hideFlags = HideFlags.HideInInspector;
-            if (b == false)
-                AllTheComponents[States.IndexOf(b)].hideFlags = HideFlags.None;
-        }
-    }
+    }  
 }
